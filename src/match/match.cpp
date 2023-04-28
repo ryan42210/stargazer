@@ -1,3 +1,1 @@
-//
-// Created by ryan on 2023/4/28.
-//
+#include "coordinate.h"

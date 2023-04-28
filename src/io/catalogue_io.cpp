@@ -4,9 +4,9 @@
 #include <iostream>
 #include <fstream>
 
-CatShortEntry entryTextToData(CatEntryText &line) {
+CatEntry entryTextToData(CatEntryText &line) {
   char *end;
-  CatShortEntry out{};
+  CatEntry out{};
   out.right_ascension = std::strtof(line.data + 15, &end);
   out.declination = std::strtof(line.data + 28, &end);
   out.B_magnitude = std::strtof(line.data + 110, &end);
@@ -14,7 +14,7 @@ CatShortEntry entryTextToData(CatEntryText &line) {
   return out;
 }
 
-void readCatalogue(std::string filepath, std::vector<CatShortEntry> &catalogue) {
+void readCatalogue(std::string filepath, std::vector<CatEntry> &catalogue) {
   if (!catalogue.empty()) {
     std::cerr << "Catalogue NOT empty! Attempt covering old data!" << std::endl;
     catalogue.clear();
