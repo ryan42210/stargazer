@@ -1,3 +1,8 @@
+Tycho-2/data/*.dat
+Tycho-2/*.gz
+
+*build*
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
