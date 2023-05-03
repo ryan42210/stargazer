@@ -20,4 +20,8 @@ Vec3f sphereToCartesian(float ra, float dec) {
   return {x, y, z};
 }
 
+float computeDistOnUnitSphere(const Vec3f& pos_a, const Vec3f& pos_b) {
+  return (pos_a - pos_b).norm();
+}
+
 #endif //MATH_UTIL_H_

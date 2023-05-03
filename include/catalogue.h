@@ -1,6 +1,8 @@
 #ifndef CATALOGUE_H_
 #define CATALOGUE_H_
 
+#include "core.h"
+
 struct CatEntry {
   float right_ascension;
   float declination;
@@ -9,9 +11,10 @@ struct CatEntry {
   float T_magnitude;
 };
 
-struct CatShortEntry {
-  float ra;
-  float dec;
+struct NaviStarEntry {
+  // float ra;
+  // float dec;
+  Vec3f pos;
   float magnitude;
 };
 
