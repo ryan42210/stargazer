@@ -23,7 +23,7 @@ int main() {
 
   printf("\n4. Read image star point from camera input...\n\n");
   Config cfg{};
-  std::vector<ImgStarPoint> img;
+  std::vector<ImgStarEntry> img;
   readCamInput("D:/workspace/stargazer/data/img_test.txt", cfg, img);
   printf("Cam Config:\n");
   printf("fov_x: %5.3f, fov_y: %5.3f, mag_threshold: %4.1f, resolution_x: %d, resolution_y: %d\n\n",

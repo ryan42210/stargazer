@@ -1,8 +1,9 @@
 add_library(stargazer-solver STATIC
         coordinate.cpp
-        navi_star_filter.cpp)
+        navi_star_filter.cpp
+        math_util.cpp)
 
 target_include_directories(stargazer-solver PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
-target_link_libraries(stargazer-solver PRIVATE Eigen3::Eigen stargazer-math)
+target_link_libraries(stargazer-solver PRIVATE Eigen3::Eigen)
 

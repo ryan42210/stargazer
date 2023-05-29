@@ -7,6 +7,6 @@
 #include <string>
 #include <vector>
 
-void readCamInput(const std::string& filename, Config& out_cfg, std::vector<ImgStarPoint>& img);
+void readCamInput(const std::string& filename, Config& out_cfg, std::vector<ImgStarEntry>& img);
 
 #endif //CAM_INPUT_H_

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cstdlib>
 
-void readCamInput(const std::string &filename, Config &out_cfg, std::vector<ImgStarPoint> &img) {
+void readCamInput(const std::string &filename, Config &out_cfg, std::vector<ImgStarEntry> &img) {
   std::ifstream fin(filename);
   if (!fin.is_open()) {
     std::cerr << "Fail to open camera input..." << std::endl;
@@ -36,7 +36,7 @@ void readCamInput(const std::string &filename, Config &out_cfg, std::vector<ImgS
   while (std::getline(fin, buffer)) {
     line.clear();
     line.str(buffer);
-    ImgStarPoint star{};
+    ImgStarEntry star{};
     std::getline(line, data, ',');
     star.x = std::strtof(data.c_str(), &end);
     std::getline(line, data, ',');

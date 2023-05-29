@@ -10,14 +10,14 @@ struct CatEntry {
   float mag;
 };
 
-struct NaviStarEntry {
+struct SpatialStarEntry {
   // float ra;
   // float dec;
   float x, y, z;
   float magnitude;
 };
 
-struct ImgStarPoint {
+struct ImgStarEntry {
   float x, y;
   float magnitude;
 };
