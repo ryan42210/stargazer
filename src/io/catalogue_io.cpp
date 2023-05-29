@@ -14,13 +14,13 @@ CatEntry entryTextToData(CatEntryText &line) {
   return out;
 }
 
-void readCatalogue(std::string filepath, std::vector<CatEntry> &catalogue) {
+void readCatalogue(std::string filename, std::vector<CatEntry> &catalogue) {
   if (!catalogue.empty()) {
     std::cerr << "Catalogue NOT empty! Attempt covering old data!" << std::endl;
     catalogue.clear();
   }
 
-  std::ifstream fin(filepath, std::ios::in | std::ios::binary);
+  std::ifstream fin(filename, std::ios::in | std::ios::binary);
   if (!fin.is_open()) {
     std::cerr << "Can not open catalogue file. Exit." << std::endl;
     exit(0);
@@ -30,4 +30,5 @@ void readCatalogue(std::string filepath, std::vector<CatEntry> &catalogue) {
   while (fin.read((char *) &record_entry, sizeof(record_entry))) {
     catalogue.push_back(entryTextToData(record_entry));
   }
+  fin.close();
 }

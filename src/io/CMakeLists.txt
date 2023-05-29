@@ -1,5 +1,6 @@
 add_library(stargazer-io STATIC
   catalogue_io.cpp
+  navi_star_list_io.cpp
 )
 
 target_include_directories(stargazer-io PRIVATE

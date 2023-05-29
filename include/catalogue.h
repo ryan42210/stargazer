@@ -1,20 +1,24 @@
 #ifndef CATALOGUE_H_
 #define CATALOGUE_H_
 
-#include "core.h"
-
 struct CatEntry {
   float right_ascension;
   float declination;
   // TODO: add more info in entry for filtering;
   float B_magnitude;
   float T_magnitude;
+  float mag;
 };
 
 struct NaviStarEntry {
   // float ra;
   // float dec;
-  Vec3f pos;
+  float x, y, z;
+  float magnitude;
+};
+
+struct ImgStarPoint {
+  float x, y;
   float magnitude;
 };
 

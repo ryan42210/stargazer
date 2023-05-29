@@ -7,7 +7,6 @@ struct Config {
   float fov_y; // in degree
 
   // config for matching algorithm
-  float max_link_dist;
   float mag_threshold;
 };
 

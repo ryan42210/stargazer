@@ -1,6 +1,6 @@
-add_subdirectory(math)
+add_subdirectory(v_cam)
 add_subdirectory(io)
-add_subdirectory(match)
+add_subdirectory(solver)
 add_subdirectory(test)
 
 add_executable(${PROJECT_NAME}-simulator simulator.cpp)
