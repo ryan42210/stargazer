@@ -11,7 +11,7 @@ struct CatEntryText{
 };
 
 CatEntry entryTextToData(CatEntryText &line);
-void readCatalogue(std::string filename, std::vector<CatEntry>& catalogue);
+void readCatalogue(const std::string& filename, std::vector<CatEntry>& catalogue);
 
 void loadStarInView(std::string filename);
 void SaveNaviStarListToFile(std::string output_path);

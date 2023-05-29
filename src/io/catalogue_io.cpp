@@ -14,7 +14,7 @@ CatEntry entryTextToData(CatEntryText &line) {
   return out;
 }
 
-void readCatalogue(std::string filename, std::vector<CatEntry> &catalogue) {
+void readCatalogue(const std::string& filename, std::vector<CatEntry> &catalogue) {
   if (!catalogue.empty()) {
     std::cerr << "Catalogue NOT empty! Attempt covering old data!" << std::endl;
     catalogue.clear();

@@ -1,8 +1,10 @@
-fov_x, fov_y
-resolution_x, resolution_y
-star_point_x1, star_point_x2, star_point_x3, star_point_x4, star_point_x5...
-star_point_y1, star_point_y2, star_point_y3, star_point_y4, star_point_y5...
-mag1, mag2, mag3, mag4, mag5...
+fov_x,fov_y,mag_threshold,resolution_x,resolution_y
+star_point_x1,star_point_y1,mag1
+star_point_x2,star_point_y2,mag2
+star_point_x3,star_point_y3,mag3
+star_point_x4,star_point_y4,mag4
+star_point_x5,star_point_y5,mag5
+...
 
 # instruction
 The input from camera should follow format above
