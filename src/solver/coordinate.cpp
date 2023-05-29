@@ -3,6 +3,8 @@
 
 #include <cmath>
 #include <map>
+#include <algorithm>
+#include <iostream>
 
 const std::vector<SpatialStarEntry> &CoordMatch::getNaviStarList() const {
   return navi_star_list;
@@ -15,6 +17,8 @@ void CoordMatch::initialize(const std::vector<SpatialStarEntry> &star_list, cons
   initFromConfig(config);
   setNaviStarList(star_list);
   buildTriangleLinks(this->navi_star_list, this->triangle_list);
+  std::cout << "Build " << triangle_list.size() << " triangles for matching..." << std::endl;
+  std::cout << "Takes " << triangle_list.size() * sizeof(DistTriangle) / 1024 << "KB." << std::endl;
 }
 
 bool CoordMatch::match(std::vector<ImgStarEntry> &stars_in_view, Attitude &out_attitude) {
@@ -110,13 +114,16 @@ Vec3f CoordMatch::imgNormalCoordToCamLocalCoord(float dx, float dy) const {
 }
 
 void CoordMatch::buildTriangleLinks(std::vector<SpatialStarEntry> &star_list,
-                                    std::vector<DistTriangle> &triangle_dist_list) {
+                                    std::vector<DistTriangle> &triangle_dist_list) const {
   // TODO: sort by magnitude
+  std::sort(star_list.begin(), star_list.end(), [](SpatialStarEntry a, SpatialStarEntry b) {
+    return a.magnitude < b.magnitude;
+  });
 
   if (!triangle_dist_list.empty()) {
     triangle_dist_list.clear();
   }
-
+#pragma omp parallel for
   for (int i = 0; i < star_list.size() - 2; i++) {
     for (int j = i + 1; j < star_list.size() - 1; j++) {
       for (int k = j + 1; k < star_list.size(); k++) {
@@ -127,6 +134,7 @@ void CoordMatch::buildTriangleLinks(std::vector<SpatialStarEntry> &star_list,
         float dist2 = (Vec3f(a.x, a.y, a.z) - Vec3f(c.x, c.y, c.z)).norm();
         float dist3 = (Vec3f(b.x, b.y, b.z) - Vec3f(c.x, c.y, c.z)).norm();
         if (dist1 < dist_threshold && dist2 < dist_threshold && dist3 < dist_threshold) {
+#pragma omp critical
           triangle_dist_list.push_back(DistTriangle{i, j, k, dist1, dist2, dist3});
         }
       }

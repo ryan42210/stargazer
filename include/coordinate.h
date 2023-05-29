@@ -31,7 +31,8 @@ class CoordMatch {
   // local coordinate basis: forward: (0, 0 ,-1), up: (0, 1, 0)
   [[nodiscard]] Vec3f imgNormalCoordToCamLocalCoord(float dx, float dy) const;
   void setNaviStarList(const std::vector<SpatialStarEntry> &star_list);
-  void buildTriangleLinks(std::vector<SpatialStarEntry> &star_list, std::vector<DistTriangle> &triangle_dist_list);
+  void buildTriangleLinks(std::vector<SpatialStarEntry> &star_list,
+                          std::vector<DistTriangle> &triangle_dist_list) const;
   void initFromConfig(const Config &config);
   void initDistThreshold();
   static bool distTupleEqual(const DistTriangle &k, const DistTriangle &u, Vec3i &out_idx);

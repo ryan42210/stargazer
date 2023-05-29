@@ -11,12 +11,13 @@ using Vec3i = Eigen::Vector3i;
 using Vec4f = Eigen::Vector4f;
 using Vec4i = Eigen::Vector4i;
 using Vecf = Eigen::VectorXf;
+using Mat3f = Eigen::Matrix3f;
 using MatXf = Eigen::MatrixXf;
 
 
 constexpr float PI = 3.141592653579;
 constexpr float INV_PI = 1 / 3.141592653579;
 
-constexpr float EPS = 1e-4;
+constexpr float EPS = 1e-3;
 
 #endif //CORE_H_
