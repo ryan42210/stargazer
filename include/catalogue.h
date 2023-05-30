@@ -11,9 +11,9 @@ struct CatEntry {
 };
 
 struct SpatialStarEntry {
-  // float ra;
-  // float dec;
-  float x, y, z;
+  float x;
+  float y;
+  float z;
   float magnitude;
 };
 

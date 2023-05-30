@@ -15,9 +15,9 @@ using Mat3f = Eigen::Matrix3f;
 using MatXf = Eigen::MatrixXf;
 
 
-constexpr float PI = 3.141592653579;
-constexpr float INV_PI = 1 / 3.141592653579;
+constexpr float PI = 3.14159265358979323846264338328;
+constexpr float INV_PI = 1 / PI;
 
-constexpr float EPS = 1e-3;
+constexpr float EPS = 1e-5;
 
 #endif //CORE_H_

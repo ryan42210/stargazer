@@ -28,28 +28,32 @@ std::vector<SpatialStarEntry> filterNaviStars(const Config &cfg, const std::vect
   float dx = cfg.fov_x / static_cast<float>(cfg.resolution_x);
   float dy = cfg.fov_y / static_cast<float>(cfg.resolution_y);
   float dist_lower_bound = (sphereToCartesian(0, 0) - sphereToCartesian(dx, dy)).norm();
-#pragma omp parallel for
-  for (int i = 0; i < short_catalogue.size() - 1; i++) {
-    auto &a = short_catalogue[i];
-    auto new_pos = sphereToCartesian(a.right_ascension, a.declination);
-    float new_mag = a.mag;
-
-    for (int j = i + 1; j < short_catalogue.size(); j++) {
-      auto &b = short_catalogue[j];
-      auto pos_b = sphereToCartesian(b.right_ascension, b.declination);
-      if ((new_pos - pos_b).norm() < dist_lower_bound) {
-        // TODO: implement merge method for two stars that are too close
-        new_pos.x() += pos_b.x();
-        new_pos.y() += pos_b.y();
-        new_pos.z() += pos_b.z();
-        new_pos.x() *= 0.5f;
-        new_pos.y() *= 0.5f;
-        new_pos.z() *= 0.5f;
-        new_mag = std::min(new_mag, b.mag);
+  for (auto & a : short_catalogue) {
+    auto pos = sphereToCartesian(a.right_ascension, a.declination);
+    float mag = a.mag;
+    bool skip = false;
+    // for (auto & b : navi_star_list) {
+    //   Vec3f pos_b(b.x, b.y, b.z);
+    //   if ((pos - pos_b).norm() < dist_lower_bound) {
+    //     b.x = (pos.x() + pos_b.x()) * 0.5f;
+    //     b.y = (pos.y() + pos_b.y()) * 0.5f;
+    //     b.z = (pos.z() + pos_b.z()) * 0.5f;
+    //     b.magnitude = std::min(mag, b.magnitude);
+    //     skip = true;
+    //     break;
+    //   }
+    // }
+    for (auto & b : navi_star_list) {
+      Vec3f pos_b(b.x, b.y, b.z);
+      if ((pos - pos_b).norm() < dist_lower_bound) {
+        b.magnitude = std::min(mag, b.magnitude);
+        skip = true;
+        break;
       }
     }
-#pragma omp critical
-    navi_star_list.push_back(SpatialStarEntry{new_pos.x(), new_pos.y(), new_pos.z(), new_mag});
+    if (!skip) {
+      navi_star_list.push_back(SpatialStarEntry{pos.x(), pos.y(), pos.z(), mag});
+    }
   }
 
   std::sort(navi_star_list.begin(), navi_star_list.end(), [](SpatialStarEntry a, SpatialStarEntry b) {

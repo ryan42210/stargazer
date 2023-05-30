@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "catalogue.h"
+#include "coordinate.h"
 
 #include <vector>
 #include <optional>
@@ -11,7 +12,7 @@
 class ImageGenerator {
  public:
   void initialize(const Config &cfg, const std::vector<CatEntry> &cata);
-  std::vector<ImgStarEntry> genImg(const std::optional<std::string> &filepath);
+  std::vector<ImgStarEntry> genImg(const std::optional<std::string> &filepath, Attitude &gen_attitude);
  private:
   float fov_x, fov_y;
   int resolution_x, resolution_y;

@@ -4,6 +4,8 @@
 #include "navi_star_filter.h"
 #include "image_generator.h"
 
+#include "math_util.h"
+
 #include <iostream>
 
 int main() {
@@ -18,6 +20,9 @@ int main() {
   bool use_external_cam_input = false;
   Config config{};
   std::vector<std::vector<ImgStarEntry>> img_series;
+  std::vector<SpatialStarEntry> navi_star;
+  std::vector<Attitude> attitude_series;
+  const int img_num = 3;
   if (use_external_cam_input) {
     std::vector<ImgStarEntry> img;
     img_series.push_back(img);
@@ -27,12 +32,13 @@ int main() {
     std::cout << "Read image data done." << std::endl;
   } else {
     std::cout << "Gen input from simulator..." << std::endl;
-    const int img_num = 1;
-    config = Config{10, 10, 800, 800, 6.5};
+    config = Config{15, 15, 800, 800, 6};
     ImageGenerator img_gen;
     img_gen.initialize(config, catalogue);
     for (int i = 0; i < img_num; i++) {
-      img_series.push_back(img_gen.genImg(std::nullopt));
+      Attitude att;
+      img_series.push_back(img_gen.genImg(std::nullopt, att));
+      attitude_series.push_back(att);
     }
   }
 
@@ -47,12 +53,18 @@ int main() {
   std::cout << "Start solving attitude..." << std::endl;
 
   // matching loops
-  for (auto& img_ : img_series) {
-    Attitude output;
+  for (int i = 0; i < img_num; i++) {
+    auto img_ = img_series[i];
+    Attitude output = attitude_series[i];
+    std::cout << "------------------- New Img ---------------" << std::endl;
+    std::cout << "Expect attitude: " << output.forward.x() << ", " << output.forward.y() << ", " << output.forward.z() << std::endl;
+    std::cout << "Expect attitude: " << output.up.x() << ", " << output.up.y() << ", " << output.up.z() << std::endl;
+    std::cout << "Expect attitude: " << output.right.x() << ", " << output.right.y() << ", " << output.right.z() << std::endl;
+    std::cout << "-- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << std::endl;
     if (solver.match(img_, output)) {
-      std::cout << output.forward.x() << ", " << output.forward.y() << ", " << output.forward.z() << std::endl;
-      std::cout << output.up.x() << ", " << output.up.y() << ", " << output.up.z() << std::endl;
-      std::cout << output.right.x() << ", " << output.right.y() << ", " << output.right.z() << std::endl;
+      std::cout << "Attitude solved: " << output.forward.x() << ", " << output.forward.y() << ", " << output.forward.z() << std::endl;
+      std::cout << "Attitude solved: " << output.up.x() << ", " << output.up.y() << ", " << output.up.z() << std::endl;
+      std::cout << "Attitude solved: " << output.right.x() << ", " << output.right.y() << ", " << output.right.z() << std::endl;
     } else {
       std::cerr << "Err: Fail to match attitude..." << std::endl;
       break;

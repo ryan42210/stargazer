@@ -10,9 +10,9 @@ float degToRad(float deg) {
 }
 
 Vec3f sphereToCartesian(float ra, float dec) {
-  float x = std::cos(degToRad(ra)) * std::cos(degToRad(dec));
-  float y = std::sin(degToRad(ra)) * std::cos(degToRad(dec));
-  float z = std::sin(degToRad(dec));
+  float z = - std::cos(degToRad(ra)) * std::cos(degToRad(dec));
+  float x = std::sin(degToRad(ra)) * std::cos(degToRad(dec));
+  float y = std::sin(degToRad(dec));
   return {x, y, z};
 }
 
