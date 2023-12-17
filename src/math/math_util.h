@@ -1,7 +1,7 @@
 #ifndef MATH_UTIL_H_
 #define MATH_UTIL_H_
 
-#include "core.h"
+#include "math_definition.h"
 
 float radToDeg(float rad);
 float degToRad(float deg);

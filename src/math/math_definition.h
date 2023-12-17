@@ -1,10 +1,8 @@
 #ifndef CORE_H_
 #define CORE_H_
 
-#include "matrix.h"
+#include "array.h"
 
-// #include <Eigen/Core>
-// #include <Eigen/Dense>
 
 using Vec2f = Vector<float, 2>;
 using Vec2i = Vector<int, 2>;

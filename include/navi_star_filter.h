@@ -1,7 +1,7 @@
 #ifndef NAVI_STAR_FILTER_H_
 #define NAVI_STAR_FILTER_H_
 
-#include "core.h"
+#include "math_definition.h"
 #include "catalogue.h"
 #include "config.h"
 

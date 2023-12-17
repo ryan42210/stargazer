@@ -8,7 +8,5 @@ if (MSVC)
     add_compile_options(/bigobj)
 endif(MSVC)
 
-find_package(OpenMP REQUIRED)
-find_package(Eigen3 CONFIG REQUIRED)
 
 add_subdirectory(src)

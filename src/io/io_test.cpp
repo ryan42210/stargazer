@@ -7,20 +7,17 @@ int main() {
 
   printf("1. Read raw catalogue...\n\n");
   std::vector<CatEntry> catalogue;
-  readCatalogue("D:/workspace/stargazer/Tycho-2/data/tyc2.dat", catalogue);
-  printf("Read %lld entries. Top 5 lines:\n", catalogue.size());
-  for (int i = 0; i < catalogue.size(); i++) {
-    if (catalogue[i].B_magnitude < 5) {
-
-      printf("ra = %12.8f, dec = %12.8f, B_mag = %6.3f, T_mag = %6.3f\n",
-             catalogue[i].right_ascension,
-             catalogue[i].declination,
-             catalogue[i].B_magnitude,
-             catalogue[i].T_magnitude);
-    }
+  readCatalogue("/Users/ryan/Desktop/workspace/stargazer/Tycho-2/data/tyc2.dat", catalogue);
+  printf("Read %zu entries. Top 10 lines:\n", catalogue.size());
+  for (int i = 0; i < 10; i++) {
+    printf("ra = %12.8f, dec = %12.8f, B_mag = %6.3f, T_mag = %6.3f\n",
+            catalogue[i].right_ascension,
+            catalogue[i].declination,
+            catalogue[i].B_magnitude,
+            catalogue[i].T_magnitude);
   }
 
-  printf("\n2. Write navigation star list...\n\nTODO\n\n");
+  printf("\n2. Write navigation star list...\nTODO\n");
 
   printf("\n3. Read existing navigation star list...\n\nTODO\n\n");
 
