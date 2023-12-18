@@ -16,13 +16,13 @@ CatEntry entryTextToData(CatEntryText &line) {
 
 void readCatalogue(const std::string& filename, std::vector<CatEntry> &catalogue) {
   if (!catalogue.empty()) {
-    std::cerr << "Catalogue NOT empty! Attempt covering old data!" << std::endl;
+    std::cerr << "Catalogue NOT empty! Covering old data!" << std::endl;
     catalogue.clear();
   }
 
   std::ifstream fin(filename, std::ios::in | std::ios::binary);
   if (!fin.is_open()) {
-    std::cerr << "Can not open catalogue file. Exit." << std::endl;
+    std::cerr << "Can not open catalogue file from "<< filename <<". Exit." << std::endl;
     exit(0);
   }
 

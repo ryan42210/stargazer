@@ -27,12 +27,12 @@ bool CoordMatch::match(std::vector<ImgStarEntry> &stars_in_view, Attitude &out_a
   std::vector<SpatialStarEntry> local_stars_pos;
   for (auto &star: stars_in_view) {
     auto normalized_img_coord = imgPxCoordToImgNormalCoord(star.x, star.y);
-    auto local_coord = imgNormalCoordToCamLocalCoord(normalized_img_coord.x(), normalized_img_coord.y());
+    auto local_coord = imgNormalCoordToCamLocalCoord(normalized_img_coord[0], normalized_img_coord[1]);
     // std::cout << "recoverd local coord (" << local_coord.x()
     //           << ", " << local_coord.y()
     //           << ", " << local_coord.z()
     //           << ")" << std::endl;
-    SpatialStarEntry local_star{local_coord.x(), local_coord.y(), local_coord.z(), star.magnitude};
+    SpatialStarEntry local_star{local_coord[0], local_coord[1], local_coord[2], star.magnitude};
     if (star.magnitude <= mag_threshold) {
       local_stars_pos.push_back(local_star);
     }
@@ -75,8 +75,8 @@ bool CoordMatch::match(std::vector<ImgStarEntry> &stars_in_view, Attitude &out_a
 
   // step 4: solve attitude from map
   // Kabsch-Umeyama algorithm
-  MatXf M_V = Eigen::MatrixXf::Zero(result.size(), 3);
-  MatXf M_W = Eigen::MatrixXf::Zero(result.size(), 3);
+  MatXXf M_V(result.size(), 3);
+  MatXXf M_W(result.size(), 3);
   int i = 0;
   for (const auto &pair : result) {
     M_V(i, 0) = local_stars_pos[pair.first].x;
@@ -89,20 +89,20 @@ bool CoordMatch::match(std::vector<ImgStarEntry> &stars_in_view, Attitude &out_a
     i++;
   }
 
-  MatXf H = M_V.transpose() * M_W;
+  Mat3f H = M_V.transpose() * M_W;
 
   auto svd_res = H.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV);
-  MatXf U = svd_res.matrixU();
-  MatXf V = svd_res.matrixV();
+  Mat3f U = svd_res.matrixU();
+  Mat3f V = svd_res.matrixV();
   int d = 1;
   if ((V * U.transpose()).determinant() < 0) d = -1;
-  MatXf I = MatXf::Identity(3,3);
+  Mat3f I = Mat3f::identity();
   I(2,2) = d;
-  MatXf R_l2w = V * I * U.transpose();
+  Mat3f R_l2w = V * I * U.transpose();
 
-  out_attitude.forward = -Vec3f(R_l2w(0, 2), R_l2w(1, 2), R_l2w(2, 2));
-  out_attitude.up = Vec3f(R_l2w(0, 1), R_l2w(1, 1), R_l2w(2, 1));
-  out_attitude.right = Vec3f(R_l2w(0, 0), R_l2w(1, 0), R_l2w(2, 0));
+  out_attitude.forward = -Vec3f{R_l2w(0, 2), R_l2w(1, 2), R_l2w(2, 2)};
+  out_attitude.up = Vec3f{R_l2w(0, 1), R_l2w(1, 1), R_l2w(2, 1)};
+  out_attitude.right = Vec3f{R_l2w(0, 0), R_l2w(1, 0), R_l2w(2, 0)};
   return true;
 }
 
@@ -116,14 +116,14 @@ void CoordMatch::setNaviStarList(const std::vector<SpatialStarEntry> &star_list)
 }
 
 Vec2f CoordMatch::imgPxCoordToImgNormalCoord(float dx, float dy) const {
-  return {dx / static_cast<float>(resolution.x()), dy / static_cast<float>(resolution.y())};
+  return {dx / static_cast<float>(resolution[0]), dy / static_cast<float>(resolution[1])};
 }
 
 // local coordinate: origin at (0, 0, 0), forward: (0, 0, -1), up: (0, 1, 0), right: (1, 0, 0)
 Vec3f CoordMatch::imgNormalCoordToCamLocalCoord(float dx, float dy) const {
   float x_offset = (2 * dx - 1) * std::tanf(degToRad(fov_x / 2.f));
   float y_offset = (2 * dy - 1) * std::tanf(degToRad(fov_y / 2.f));
-  Vec3f direction = x_offset * Vec3f(1, 0, 0) + y_offset * Vec3f(0, 1, 0) + Vec3f(0, 0, -1);
+  Vec3f direction = Vec3f{1.f, 0.f, 0.f} * x_offset + Vec3f{0.f, 1.f, 0.f} * y_offset + Vec3f{0.f, 0.f, -1.f};
   return direction.normalized();
 }
 
@@ -136,19 +136,18 @@ void CoordMatch::buildTriangleLinksForNaviStars() {
   if (!triangle_list.empty()) {
     triangle_list.clear();
   }
-// #pragma omp parallel for
   for (int i = 0; i < navi_star_list.size() - 2; i++) {
     const auto &a = navi_star_list[i];
 
     for (int j = i + 1; j < navi_star_list.size() - 1; j++) {
       const auto &b = navi_star_list[j];
-      float dist_ij = (Vec3f(a.x, a.y, a.z) - Vec3f(b.x, b.y, b.z)).norm();
+      float dist_ij = (Vec3f{a.x, a.y, a.z} - Vec3f{b.x, b.y, b.z}).norm();
       if (dist_ij >= dist_threshold) continue;
 
       for (int k = j + 1; k < navi_star_list.size(); k++) {
         const auto &c = navi_star_list[k];
-        float dist_ik = (Vec3f(a.x, a.y, a.z) - Vec3f(c.x, c.y, c.z)).norm();
-        float dist_jk = (Vec3f(b.x, b.y, b.z) - Vec3f(c.x, c.y, c.z)).norm();
+        float dist_ik = (Vec3f{a.x, a.y, a.z} - Vec3f{c.x, c.y, c.z}).norm();
+        float dist_jk = (Vec3f{b.x, b.y, b.z} - Vec3f{c.x, c.y, c.z}).norm();
         if (dist_ik > dist_threshold || dist_jk > dist_threshold) continue;
         if (distEqual(dist_ij, dist_ik) || distEqual(dist_ij, dist_jk) || distEqual(dist_jk, dist_ik)) continue;
 
@@ -161,7 +160,6 @@ void CoordMatch::buildTriangleLinksForNaviStars() {
           // return e1.mag < e2.mag;
           return e1.d > e2.d;
         });
-// #pragma omp critical
         triangle_list.push_back(t);
       }
     }
@@ -192,9 +190,9 @@ void CoordMatch::buildTriangleLinksForImgStars(std::vector<SpatialStarEntry> &st
         auto &a = star_list[i];
         auto &b = star_list[j];
         auto &c = star_list[k];
-        float dist1 = (Vec3f(a.x, a.y, a.z) - Vec3f(b.x, b.y, b.z)).norm();
-        float dist2 = (Vec3f(a.x, a.y, a.z) - Vec3f(c.x, c.y, c.z)).norm();
-        float dist3 = (Vec3f(b.x, b.y, b.z) - Vec3f(c.x, c.y, c.z)).norm();
+        float dist1 = (Vec3f{a.x, a.y, a.z} - Vec3f{b.x, b.y, b.z}).norm();
+        float dist2 = (Vec3f{a.x, a.y, a.z} - Vec3f{c.x, c.y, c.z}).norm();
+        float dist3 = (Vec3f{b.x, b.y, b.z} - Vec3f{c.x, c.y, c.z}).norm();
         Triangle t;
         t.push_back(TriangleEdge{i, a.magnitude, dist3});
         t.push_back(TriangleEdge{j, b.magnitude, dist2});
@@ -217,8 +215,8 @@ void CoordMatch::buildTriangleLinksForImgStars(std::vector<SpatialStarEntry> &st
 void CoordMatch::initFromConfig(const Config &config) {
   fov_x = config.fov_x;
   fov_y = config.fov_y;
-  resolution.x() = config.resolution_x;
-  resolution.y() = config.resolution_y;
+  resolution[0] = config.resolution_x;
+  resolution[1] = config.resolution_y;
   mag_threshold = config.mag_threshold;
   initDistThreshold();
 }

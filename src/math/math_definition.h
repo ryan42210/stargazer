@@ -1,5 +1,5 @@
-#ifndef CORE_H_
-#define CORE_H_
+#ifndef MATH_DEFINITION_H_
+#define MATH_DEFINITION_H_
 
 #include "array.h"
 
@@ -12,8 +12,8 @@ using Vec4f = Vector<float, 4>;
 using Vec4i = Vector<int, 4>;
 template<int n> using Vecf = Vector<int, n>;
 
-using Mat3f = Matrix<float, 3, 3>;
-template<int n> using MatXf = Matrix<float, n, n>;
+using Mat3f = Matrix<float, 3>;
+using MatXXf = DynamicMatrix<float>;
 
 
 constexpr float PI = 3.14159265358979323846264338328;
@@ -21,4 +21,4 @@ constexpr float INV_PI = 1 / PI;
 
 constexpr float EPS = 1e-5;
 
-#endif //CORE_H_
+#endif //MATH_DEFINITION_H_

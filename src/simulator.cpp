@@ -10,7 +10,7 @@
 
 int main() {
   // read raw catalogue
-  std::string catalogue_path("D:/workspace/stargazer/Tycho-2/data/tyc2.dat");
+  std::string catalogue_path("../../Tycho-2/data/tyc2.dat");
   std::vector<CatEntry> catalogue;
   std::cout << "Start reading catalogue..." << std::endl;
   readCatalogue(catalogue_path, catalogue);
